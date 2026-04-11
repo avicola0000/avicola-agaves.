@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, Egg, MessageCircle } from 'lucide-react';
+import { Menu, X, MessageCircle } from 'lucide-react';
 
 const navLinks = [
   { label: 'Inicio', href: '#inicio' },

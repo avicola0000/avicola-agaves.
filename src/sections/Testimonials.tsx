@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Star, Quote } from 'lucide-react';
@@ -20,7 +20,7 @@ const testimonials = [
 
 export default function Testimonials() {
   const [offset, setOffset] = useState(0);
-  const containerRef = useRef<HTMLDivElement>(null);
+  
 
   // AUTO-PLAY: Se mueve solo cada 4 segundos
   useEffect(() => {
