@@ -35,7 +35,7 @@ export default function CTA() {
     const destello = "\u2728";
     const text = `¡Hola! Estoy listo para tener gallinas ponedoras. ¿Me pueden ayudar con una cotización? ${pollito}${destello}`;
     const message = encodeURIComponent(text);
-    window.open(`https://wa.me/56952424597?text=${message}`, '_blank');
+    window.open(`https://wa.me/51982057180?text=${message}`, '_blank');
   };
 
   return (
@@ -70,7 +70,7 @@ export default function CTA() {
                 </div>
                 <div>
                   <p className="text-white/60 text-sm">Teléfono</p>
-                  <p className="text-white font-semibold">+56 9 5242 4597</p>
+                  <p className="text-white font-semibold">+51 982 057 180</p>
                 </div>
               </div>
 
@@ -80,7 +80,7 @@ export default function CTA() {
                 </div>
                 <div>
                   <p className="text-white/60 text-sm">Logística</p>
-                  <p className="text-white font-semibold">Despachos a todo Chile</p>
+                  <p className="text-white font-semibold">Despachos a todo peru</p>
                 </div>
               </div>
 
@@ -90,7 +90,7 @@ export default function CTA() {
                 </div>
                 <div>
                   <p className="text-white/60 text-sm">Ubicación</p>
-                  <p className="text-white font-semibold">Valdivia, Región de Los Ríos</p>
+                  <p className="text-white font-semibold">URB. EL, MZA. D, Chincha Alta 11702, Perú</p>
                 </div>
               </div>
             </div>

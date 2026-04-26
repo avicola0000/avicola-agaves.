@@ -2,20 +2,20 @@ import { Egg, Facebook, Instagram, Youtube, MessageCircle, Phone, MapPin, Truck 
 
 const footerLinks = {
   contacto: [
-    { label: '+56 9 5242 4597', href: 'https://wa.me/56952424597', icon: Phone },
-    { label: 'Valdivia, Región de Los Ríos', href: '#', icon: MapPin },
-    { label: 'Despachos a todo Chile', href: '#', icon: Truck },
+    { label: '+51 982 057 180', href: 'https://wa.me/51982057180', icon: Phone },
+    { label: 'URB. EL, MZA. D, Chincha Alta 11702, Perú', href: '#', icon: MapPin },
+    { label: 'Despachos a todo peru', href: '#', icon: Truck },
   ],
 };
 
 export default function Footer() {
   const handleWhatsAppClick = () => {
-    // Códigos Unicode para evitar el rombo ()
+    // Códigos Unicode para evitar el rombo
     const gallina = "\uD83D\uDC14"; 
     const huevo = "\uD83E\uDD5A";
     const text = `¡Hola! Me interesa información sobre sus gallinas ponedoras. ${gallina}${huevo}`;
     const message = encodeURIComponent(text);
-    window.open(`https://wa.me/56952424597?text=${message}`, '_blank');
+    window.open(`https://wa.me/51982057180?text=${message}`, '_blank');
   };
 
   return (
@@ -31,15 +31,9 @@ export default function Footer() {
               <span className="font-display text-2xl font-bold tracking-tight text-white">Agaves</span>
             </div>
             <p className="text-white/70 mb-6 leading-relaxed">
-  Granja familiar dedicada a la cría de gallinas ponedoras felices y saludables desde Valdivia. Brindando calidad desde 2005.
-</p>
+              Granja familiar dedicada a la cría de gallinas ponedoras felices y saludables desde Chincha Alta. Brindando calidad desde 2005.
+            </p>
 
-// Busca la sección de la barra inferior al final del componente
-<div className="border-t border-white/10 mt-16 pt-8 text-center md:text-left">
-  <p className="text-white/40 text-sm">
-    © {new Date().getFullYear()} Agaves - Gallinas Ponedoras. Trayectoria desde 2005. Valdivia, Región de Los Ríos, Chile.
-  </p>
-</div>
             <div className="flex gap-4">
               <a href="#" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-[#f7c35f] hover:text-[#1e1e1e] transition-all duration-300">
                 <Facebook className="w-5 h-5" />
@@ -61,7 +55,7 @@ export default function Footer() {
             
             <div className="w-full h-64 rounded-3xl overflow-hidden border border-white/5 shadow-2xl relative">
               <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d191297.439019623!2d-73.3486259!3d-39.817303!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9615eeec9093f9e1%3A0x6e38209214436894!2sValdivia%2C%20Los%20R%C3%ADos!5e0!3m2!1ses-419!2scl!4v1712715000000!5m2!1ses-419!2scl" 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15542.476483584734!2d-76.1364506!3d-13.4187515!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x911064375b43063f%3A0x600100913959950!2sChincha%20Alta%2011702%2C%20Peru!5e0!3m2!1sen!2scl!4v1714164500000!5m2!1sen!2scl" 
                 width="100%" 
                 height="100%" 
                 style={{ border: 0 }} 
@@ -99,7 +93,13 @@ export default function Footer() {
             </button>
           </div>
         </div>
+
+        <div className="border-t border-white/10 mt-16 pt-8 text-center md:text-left">
+          <p className="text-white/40 text-sm">
+            © {new Date().getFullYear()} Agaves - Gallinas Ponedoras. Trayectoria desde 2005. URB. EL, MZA. D, Chincha Alta 11702, Perú.
+          </p>
+        </div>
       </div>
     </footer>
   );
-}   
+}

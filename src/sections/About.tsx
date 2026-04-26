@@ -143,7 +143,7 @@ export default function About() {
 
             <p className="text-lg text-[#444444] mb-6 leading-relaxed">
               Somos una granja familiar dedicada a la cría de gallinas ponedoras felices y saludables. 
-              Desde 2005, nos hemos comprometido a proporcionar a las familias Chilenas acceso a 
+              Desde 2005, nos hemos comprometido a proporcionar a las familias peruanas acceso a 
               huevos frescos de la más alta calidad.
             </p>
 

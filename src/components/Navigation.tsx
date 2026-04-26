@@ -24,7 +24,7 @@ export default function Navigation() {
 
   const handleWhatsAppClick = () => {
     const message = encodeURIComponent('¡Hola! Me interesa información sobre sus productos de Avícola Agaves.');
-    window.open(`https://wa.me/56952424597?text=${message}`, '_blank');
+    window.open(`https://wa.me/51982057180?text=${message}`, '_blank');
   };
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
