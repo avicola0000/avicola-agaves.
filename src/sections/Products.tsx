@@ -154,7 +154,7 @@ export default function Products() {
     });
 
     message += `\n📍 *Ubicación:* Perú\n`;
-    window.open(`https://wa.me/51982057180?text=${encodeURIComponent(message)}`, '_blank');
+    window.open(`https://wa.me/51946665053?text=${encodeURIComponent(message)}`, '_blank');
     setIsDialogOpen(false);
   };
 

@@ -2,7 +2,7 @@ import { Egg, Facebook, Instagram, Youtube, MessageCircle, Phone, MapPin, Truck 
 
 const footerLinks = {
   contacto: [
-    { label: '+51 982 057 180', href: 'https://wa.me/51982057180', icon: Phone },
+    { label: '+51 946 665 053', href: 'https://wa.me/51946665053', icon: Phone },
     { label: 'URB. EL, MZA. D, Chincha Alta 11702, Perú', href: '#', icon: MapPin },
     { label: 'Despachos a todo peru', href: '#', icon: Truck },
   ],
@@ -15,7 +15,7 @@ export default function Footer() {
     const huevo = "\uD83E\uDD5A";
     const text = `¡Hola! Me interesa información sobre sus gallinas ponedoras. ${gallina}${huevo}`;
     const message = encodeURIComponent(text);
-    window.open(`https://wa.me/51982057180?text=${message}`, '_blank');
+    window.open(`https://wa.me/51946665053?text=${message}`, '_blank');
   };
 
   return (

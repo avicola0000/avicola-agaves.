@@ -35,7 +35,7 @@ export default function CTA() {
     const destello = "\u2728";
     const text = `¡Hola! Estoy listo para tener gallinas ponedoras. ¿Me pueden ayudar con una cotización? ${pollito}${destello}`;
     const message = encodeURIComponent(text);
-    window.open(`https://wa.me/51982057180?text=${message}`, '_blank');
+    window.open(`https://wa.me/51946665053?text=${message}`, '_blank');
   };
 
   return (
@@ -70,7 +70,7 @@ export default function CTA() {
                 </div>
                 <div>
                   <p className="text-white/60 text-sm">Teléfono</p>
-                  <p className="text-white font-semibold">+51 982 057 180</p>
+                  <p className="text-white font-semibold">+51 946 665 053</p>
                 </div>
               </div>
 
