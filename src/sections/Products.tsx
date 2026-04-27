@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Plus, Minus, ShoppingCart, Check, ChevronDown } from 'lucide-react';
+import { Plus, Minus, Check, ChevronDown } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -13,7 +13,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 interface AgeOption {
   label: string;
-  price: string; // Cambiado a string para soportar "S/"
+  price: string; 
 }
 
 interface Product {
@@ -25,7 +25,6 @@ interface Product {
   ageOptions: AgeOption[];
 }
 
-// Todos los productos tienen ahora los mismos precios unificados
 const commonAgeOptions: AgeOption[] = [
   { label: '8 Semanas', price: 'S/ 10' },
   { label: '12 Semanas', price: 'S/ 15' },
@@ -101,13 +100,13 @@ export default function Products() {
 
   const getPriceForSelectedAge = (product: Product) => {
     const selectedAgeLabel = selectedAges[product.id];
-    return product.ageOptions.find(opt => opt.label === selectedAgeLabel)?.price || '0';
+    return product.ageOptions.find(opt => opt.label === selectedAgeLabel)?.price || 'S/ 0';
   };
 
   const addToCart = (product: Product) => {
     const age = selectedAges[product.id];
     const price = getPriceForSelectedAge(product);
-
+    
     setCart((prev) => {
       const existing = prev.find((item) => item.product.id === product.id && item.selectedAge === age);
       if (existing) {
@@ -119,6 +118,8 @@ export default function Products() {
       }
       return [...prev, { product, quantity: 1, selectedAge: age, priceAtSelection: price }];
     });
+    
+    setIsDialogOpen(true);
   };
 
   const removeFromCart = (productId: number, age: string) => {
@@ -137,104 +138,66 @@ export default function Products() {
 
   const sendWhatsAppQuote = () => {
     if (cart.length === 0) return;
-
-    const today = new Date().toLocaleDateString('es-PE', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
-
+    const today = new Date().toLocaleDateString('es-PE');
     let message = `📦 *SOLICITUD DE COTIZACIÓN - AVÍCOLA AGAVES PERÚ*\n`;
-    message += `👋 ¡Hola! Me gustaría cotizar el siguiente pedido desde la web:\n\n`;
     message += `*Fecha:* ${today}\n\n`;
     message += `*DETALLE:*\n`;
-
     cart.forEach((item) => {
       message += `• ${item.quantity}x ${item.product.name} (${item.selectedAge}) — *${item.priceAtSelection}*\n`;
     });
-
     message += `\n📍 *Ubicación:* Perú\n`;
+    // USANDO TU NÚMERO ORIGINAL: +51 946 665 053
     window.open(`https://wa.me/51946665053?text=${encodeURIComponent(message)}`, '_blank');
-    setIsDialogOpen(false);
   };
 
   return (
-    <section ref={sectionRef} id="productos" className="relative py-20 bg-[#fef9f0] overflow-hidden">
+    <section ref={sectionRef} id="productos" className="relative py-20 bg-[#fef9f0]">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <span className="text-[#f7c35f] font-semibold text-sm uppercase tracking-wider mb-2 block">Venta de Gallinas</span>
-          <h2 className="text-4xl md:text-5xl font-bold text-[#1e1e1e] mb-4">Nuestro <span className="text-[#f7c35f]">Catálogo</span></h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">Selecciona la edad ideal para tu proyecto avícola. Despacho a todo el Perú.</p>
+          <h2 className="text-4xl font-bold">Nuestro Catálogo</h2>
+          <p className="text-gray-600">Precios actualizados para Perú</p>
         </div>
 
-        <div ref={cardsRef} className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div ref={cardsRef} className="grid md:grid-cols-3 gap-8">
           {products.map((product) => (
-            <div key={product.id} className="product-card bg-white rounded-3xl overflow-hidden shadow-xl border border-gray-100 flex flex-col">
-              <div className="relative aspect-[4/3] overflow-hidden">
-                <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
-                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-2xl shadow-lg">
-                  <span className="text-xl font-bold text-[#1e1e1e]">
-                    {getPriceForSelectedAge(product)}
-                  </span>
+            <div key={product.id} className="product-card bg-white rounded-3xl shadow-lg p-6 flex flex-col">
+              <div className="relative mb-4">
+                <img src={product.image} className="rounded-2xl w-full h-48 object-cover" />
+                <div className="absolute top-2 right-2 bg-white/90 px-3 py-1 rounded-full font-bold">
+                  {getPriceForSelectedAge(product)}
                 </div>
               </div>
-
-              <div className="p-6 flex-1 flex flex-col">
-                <h3 className="text-2xl font-bold text-[#1e1e1e] mb-2">{product.name}</h3>
-                <p className="text-gray-500 text-sm mb-6 flex-1">{product.description}</p>
-
-                <div className="mb-6">
-                  <label className="text-[10px] uppercase font-bold text-gray-400 mb-2 block tracking-widest">Seleccionar Edad</label>
-                  <div className="relative">
-                    <select
-                      value={selectedAges[product.id]}
-                      onChange={(e) => handleAgeChange(product.id, e.target.value)}
-                      className="w-full appearance-none bg-gray-50 border border-gray-200 text-[#1e1e1e] py-3 px-4 pr-10 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#f7c35f] transition-all cursor-pointer"
-                    >
-                      {product.ageOptions.map((opt) => (
-                        <option key={opt.label} value={opt.label}>{opt.label}</option>
-                      ))}
-                    </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => addToCart(product)}
-                  className="w-full bg-[#1e1e1e] text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#f7c35f] hover:text-[#1e1e1e] transition-all"
-                >
-                  <Plus className="w-5 h-5" /> Agregar al Pedido
-                </button>
-              </div>
+              <h3 className="text-xl font-bold mb-4">{product.name}</h3>
+              <select 
+                onChange={(e) => handleAgeChange(product.id, e.target.value)}
+                className="mb-4 p-2 border rounded-xl w-full"
+              >
+                {product.ageOptions.map(opt => <option key={opt.label} value={opt.label}>{opt.label}</option>)}
+              </select>
+              <button onClick={() => addToCart(product)} className="bg-[#1e1e1e] text-white py-3 rounded-xl font-bold hover:bg-[#f7c35f]">
+                Agregar al Pedido
+              </button>
             </div>
           ))}
         </div>
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="bg-white max-w-md rounded-3xl">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold">Resumen de Pedido</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 my-4 max-h-[60vh] overflow-y-auto">
+        <DialogContent className="bg-white rounded-3xl">
+          <DialogHeader><DialogTitle>Resumen de Pedido</DialogTitle></DialogHeader>
+          <div className="space-y-4 my-4">
             {cart.map((item, idx) => (
-              <div key={idx} className="flex items-center gap-4 bg-gray-50 p-3 rounded-2xl">
-                <img src={item.product.image} className="w-16 h-16 rounded-xl object-cover" />
-                <div className="flex-1">
-                  <h4 className="font-bold text-sm">{item.product.name}</h4>
-                  <p className="text-xs text-gray-400">{item.selectedAge}</p>
-                  <div className="flex items-center gap-3 mt-2">
-                    <button onClick={() => removeFromCart(item.product.id, item.selectedAge)} className="p-1 bg-gray-200 rounded-md"><Minus className="w-3 h-3"/></button>
-                    <span className="text-sm font-bold">{item.quantity}</span>
-                    <button onClick={() => addToCart(item.product)} className="p-1 bg-gray-200 rounded-md"><Plus className="w-3 h-3"/></button>
-                  </div>
+              <div key={idx} className="flex justify-between items-center bg-gray-50 p-3 rounded-xl">
+                <div>
+                  <p className="font-bold">{item.product.name}</p>
+                  <p className="text-xs">{item.selectedAge} (Cant: {item.quantity})</p>
                 </div>
                 <p className="font-bold text-[#f7c35f]">{item.priceAtSelection}</p>
               </div>
             ))}
           </div>
-          <button onClick={sendWhatsAppQuote} className="w-full bg-green-500 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-green-600">
-            <Check className="w-6 h-6" /> Enviar por WhatsApp
+          <button onClick={sendWhatsAppQuote} className="w-full bg-green-500 text-white py-4 rounded-xl font-bold">
+            Enviar por WhatsApp
           </button>
         </DialogContent>
       </Dialog>
