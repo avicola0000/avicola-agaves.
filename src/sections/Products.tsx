@@ -143,10 +143,11 @@ export default function Products() {
     message += `*Fecha:* ${today}\n\n`;
     message += `*DETALLE:*\n`;
     cart.forEach((item) => {
+      // Solo mostramos el texto del precio sin cálculos matemáticos
       message += `• ${item.quantity}x ${item.product.name} (${item.selectedAge}) — *${item.priceAtSelection}*\n`;
     });
     message += `\n📍 *Ubicación:* Perú\n`;
-    // USANDO TU NÚMERO ORIGINAL: +51 946 665 053
+    // Número solicitado: +51 946 665 053
     window.open(`https://wa.me/51946665053?text=${encodeURIComponent(message)}`, '_blank');
   };
 
@@ -155,7 +156,7 @@ export default function Products() {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold">Nuestro Catálogo</h2>
-          <p className="text-gray-600">Precios actualizados para Perú</p>
+          <p className="text-gray-600">Selecciona la edad ideal para tu proyecto avícola. Despacho a todo Perú.</p>
         </div>
 
         <div ref={cardsRef} className="grid md:grid-cols-3 gap-8">
@@ -163,18 +164,32 @@ export default function Products() {
             <div key={product.id} className="product-card bg-white rounded-3xl shadow-lg p-6 flex flex-col">
               <div className="relative mb-4">
                 <img src={product.image} className="rounded-2xl w-full h-48 object-cover" />
-                <div className="absolute top-2 right-2 bg-white/90 px-3 py-1 rounded-full font-bold">
+                <div className="absolute top-2 right-2 bg-white/90 px-3 py-1 rounded-full font-bold text-[#1e1e1e]">
                   {getPriceForSelectedAge(product)}
                 </div>
               </div>
-              <h3 className="text-xl font-bold mb-4">{product.name}</h3>
-              <select 
-                onChange={(e) => handleAgeChange(product.id, e.target.value)}
-                className="mb-4 p-2 border rounded-xl w-full"
+              <h3 className="text-xl font-bold mb-4 text-[#1e1e1e]">{product.name}</h3>
+              
+              <div className="mb-4">
+                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">
+                  Seleccionar Edad
+                </label>
+                <select 
+                  value={selectedAges[product.id]}
+                  onChange={(e) => handleAgeChange(product.id, e.target.value)}
+                  className="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-[#f7c35f] outline-none transition-all"
+                >
+                  {product.ageOptions.map(opt => (
+                    <option key={opt.label} value={opt.label}>{opt.label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <button 
+                onClick={() => addToCart(product)} 
+                className="w-full bg-[#1e1e1e] text-white py-4 rounded-xl font-bold hover:bg-[#f7c35f] hover:text-[#1e1e1e] transition-all flex items-center justify-center gap-2"
               >
-                {product.ageOptions.map(opt => <option key={opt.label} value={opt.label}>{opt.label}</option>)}
-              </select>
-              <button onClick={() => addToCart(product)} className="bg-[#1e1e1e] text-white py-3 rounded-xl font-bold hover:bg-[#f7c35f]">
+                <Plus className="w-5 h-5" />
                 Agregar al Pedido
               </button>
             </div>
@@ -183,20 +198,41 @@ export default function Products() {
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="bg-white rounded-3xl">
-          <DialogHeader><DialogTitle>Resumen de Pedido</DialogTitle></DialogHeader>
-          <div className="space-y-4 my-4">
+        <DialogContent className="bg-white rounded-3xl border-none shadow-2xl max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-[#1e1e1e]">Resumen de Pedido</DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4 my-6 max-h-[60vh] overflow-y-auto pr-2">
             {cart.map((item, idx) => (
-              <div key={idx} className="flex justify-between items-center bg-gray-50 p-3 rounded-xl">
-                <div>
-                  <p className="font-bold">{item.product.name}</p>
-                  <p className="text-xs">{item.selectedAge} (Cant: {item.quantity})</p>
+              <div key={idx} className="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl">
+                <div className="flex-1">
+                  <h4 className="font-bold text-[#1e1e1e]">{item.product.name}</h4>
+                  <p className="text-sm text-gray-500">{item.selectedAge}</p>
+                  <div className="flex items-center gap-4 mt-3">
+                    <div className="flex items-center gap-3 bg-white px-3 py-1 rounded-lg border border-gray-100">
+                      <button onClick={() => removeFromCart(item.product.id, item.selectedAge)} className="text-gray-400 hover:text-red-500 transition-colors">
+                        <Minus className="w-4 h-4" />
+                      </button>
+                      <span className="font-bold min-w-[20px] text-center">{item.quantity}</span>
+                      <button onClick={() => addToCart(item.product)} className="text-gray-400 hover:text-green-500 transition-colors">
+                        <Plus className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <p className="font-bold text-[#f7c35f]">{item.priceAtSelection}</p>
+                <div className="text-right">
+                  <p className="font-bold text-[#f7c35f] text-lg">{item.priceAtSelection}</p>
+                </div>
               </div>
             ))}
           </div>
-          <button onClick={sendWhatsAppQuote} className="w-full bg-green-500 text-white py-4 rounded-xl font-bold">
+
+          <button 
+            onClick={sendWhatsAppQuote} 
+            className="w-full bg-green-500 text-white py-5 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-green-600 shadow-lg shadow-green-500/20 transition-all"
+          >
+            <Check className="w-6 h-6" />
             Enviar por WhatsApp
           </button>
         </DialogContent>
