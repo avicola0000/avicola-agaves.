@@ -63,6 +63,15 @@ export default function Products() {
   const [cart, setCart] = useState<{ product: Product; quantity: number; selectedAge: string; priceAtSelection: string }[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
+  // Lógica para calcular el TOTAL
+  const calculateTotal = () => {
+    return cart.reduce((acc, item) => {
+      // Quitamos "S/ " y convertimos a número para sumar
+      const numericPrice = parseFloat(item.priceAtSelection.replace('S/ ', ''));
+      return acc + (numericPrice * item.quantity);
+    }, 0);
+  };
+
   const addToCart = (product: Product) => {
     const age = selectedAges[product.id];
     const price = product.ageOptions.find(opt => opt.label === age)?.price || 'S/ 0';
@@ -96,6 +105,7 @@ export default function Products() {
     cart.forEach(item => {
       message += `• ${item.quantity}x ${item.product.name} (${item.selectedAge}) - ${item.priceAtSelection}\n`;
     });
+    message += `\n💰 *TOTAL ESTIMADO: S/ ${calculateTotal()}*`;
     window.open(`https://wa.me/51946665053?text=${encodeURIComponent(message)}`, '_blank');
   };
 
@@ -187,13 +197,18 @@ export default function Products() {
 
           {cart.length > 0 && (
             <div className="p-6 border-t bg-gray-50">
+              {/* SECCIÓN DEL TOTAL */}
+              <div className="flex justify-between items-center mb-4 px-2">
+                <span className="text-gray-600 font-semibold uppercase text-sm tracking-wider">Total del Pedido:</span>
+                <span className="text-2xl font-black text-[#1e1e1e]">S/ {calculateTotal()}</span>
+              </div>
+
               <button 
                 onClick={sendWhatsApp}
                 className="w-full bg-[#25D366] text-white py-5 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-[#128C7E] transition-all shadow-lg"
               >
                 <MessageCircle className="w-6 h-6" /> Confirmar por WhatsApp
               </button>
-              <p className="text-center text-[10px] text-gray-400 mt-4 uppercase tracking-widest">Avícola Agaves Perú</p>
             </div>
           )}
         </div>
