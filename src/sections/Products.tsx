@@ -152,7 +152,8 @@ export default function Products() {
 
   const removeFromCart = (productId: number, age: string) => {
     setCart((prev) => {
-      const existing = prev.find((item) => item.productId === productId && item.selectedAge === age);
+      // AQUÍ SE CORRIGE: Cambiar item.productId por item.product.id
+      const existing = prev.find((item) => item.product.id === productId && item.selectedAge === age);
       if (existing && existing.quantity > 1) {
         return prev.map((item) =>
           (item.product.id === productId && item.selectedAge === age)
@@ -163,7 +164,7 @@ export default function Products() {
       return prev.filter((item) => !(item.product.id === productId && item.selectedAge === age));
     });
   };
-
+  
   const getTotalPrice = () => {
     return cart.reduce((total, item) => total + (item.priceAtSelection * item.quantity), 0);
   };
