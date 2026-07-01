@@ -72,7 +72,7 @@ export default function Hero() {
 
   const handleWhatsAppClick = () => {
     const message = encodeURIComponent('¡Hola! Me interesa cotizar gallinas ponedoras de Avícola Agaves. ¿Podrían darme más información?');
-    window.open(`https://wa.me/51946665053?text=${message}`, '_blank');
+    window.open(`https://wa.me/50760906967?text=${message}`, '_blank');
   };
 
   return (

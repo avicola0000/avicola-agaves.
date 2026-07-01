@@ -2,9 +2,9 @@ import { Egg, Facebook, Instagram, Youtube, MessageCircle, Phone, MapPin, Truck 
 
 const footerLinks = {
   contacto: [
-    { label: '+51 946 665 053', href: 'https://wa.me/51946665053', icon: Phone },
-    { label: 'URB. EL, MZA. D, Chincha Alta 11702, Perú', href: '#', icon: MapPin },
-    { label: 'Despachos a todo peru', href: '#', icon: Truck },
+    { label: '+507 6090 6967', href: 'https://wa.me/50760906967', icon: Phone },
+    { label: 'Calle 11 de Octubre, Aguadulce, Provincia de Coclé, Panamá', href: '#', icon: MapPin },
+    { label: 'Despachos a toda panama', href: '#', icon: Truck },
   ],
 };
 
@@ -15,7 +15,7 @@ export default function Footer() {
     const huevo = "\uD83E\uDD5A";
     const text = `¡Hola! Me interesa información sobre sus gallinas ponedoras. ${gallina}${huevo}`;
     const message = encodeURIComponent(text);
-    window.open(`https://wa.me/51946665053?text=${message}`, '_blank');
+    window.open(`https://wa.me/50760906967?text=${message}`, '_blank');
   };
 
   return (
@@ -31,7 +31,7 @@ export default function Footer() {
               <span className="font-display text-2xl font-bold tracking-tight text-white">Agaves</span>
             </div>
             <p className="text-white/70 mb-6 leading-relaxed">
-              Granja familiar dedicada a la cría de gallinas ponedoras felices y saludables desde Chincha Alta. Brindando calidad desde 2005.
+              Granja familiar dedicada a la cría de gallinas ponedoras felices y saludables.
             </p>
 
             <div className="flex gap-4">
@@ -53,16 +53,17 @@ export default function Footer() {
               Nuestra Ubicación Exacta
             </h4>
             
+            {/* NUEVO MAPA DE PANAMÁ ADAPTADO A REACT */}
             <div className="w-full h-64 rounded-3xl overflow-hidden border border-white/5 shadow-2xl relative">
               <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15542.476483584734!2d-76.1364506!3d-13.4187515!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x911064375b43063f%3A0x600100913959950!2sChincha%20Alta%2011702%2C%20Peru!5e0!3m2!1sen!2scl!4v1714164500000!5m2!1sen!2scl" 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3948.619568895703!2d-80.54745359106599!3d8.240954500795521!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8fadced55958ad31%3A0x1f994f6c65e9b64a!2sC.%2011%20de%20Octubre%2C%20Aguadulce%2C%20Provincia%20de%20Cocl%C3%A9%2C%20Panam%C3%A1!5e0!3m2!1ses-419!2sve!4v1782862916038!5m2!1ses-419!2sve" 
                 width="100%" 
                 height="100%" 
                 style={{ border: 0 }} 
                 allowFullScreen={true} 
                 loading="lazy" 
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Ubicación de Avícola Agaves"
+                referrerPolicy="strict-origin-when-cross-origin"
+                title="Ubicación de Avícola Agaves Panamá"
               ></iframe>
             </div>
           </div>
@@ -96,7 +97,7 @@ export default function Footer() {
 
         <div className="border-t border-white/10 mt-16 pt-8 text-center md:text-left">
           <p className="text-white/40 text-sm">
-            © {new Date().getFullYear()} Agaves - Gallinas Ponedoras. Trayectoria desde 2005. URB. EL, MZA. D, Chincha Alta 11702, Perú.
+            © {new Date().getFullYear()} Agaves - Gallinas Ponedoras. Trayectoria desde 2005. Calle 11 de Octubre, Aguadulce, Provincia de Coclé, Panamá
           </p>
         </div>
       </div>

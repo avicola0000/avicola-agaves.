@@ -1,7 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Plus, Minus, ShoppingCart, X, MessageCircle, ShoppingBag, Trash2 } from 'lucide-react';
+import { Plus, Minus, ShoppingCart, Check, ChevronDown } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,24 +25,22 @@ interface Product {
   ageOptions: AgeOption[];
 }
 
-const commonAgeOptions: AgeOption[] = [
-  { label: '8 Semanas', price: 10 },
-  { label: '12 Semanas', price: 15 },
-  { label: '16 Semanas', price: 20 },
-  { label: '20 Semanas', price: 25 },
-  { label: '24 Semanas', price: 30 },
-  { label: '2 Dias X 100', price: 450 },
-  { label: '4 Semanas X 100', price: 600 },
-];
-
 const products: Product[] = [
   {
     id: 1,
-    name: 'ISA Brown',
-    description: 'La ponedora estrella, dócil y altamente eficiente; garantiza más de 300 huevos grandes.',
+    name: 'Sussex',
+    description: 'Aves de doble propósito, altamente productivas, dóciles y perfectamente adaptadas a nuestro clima. ¡La opción perfecta para una producción de huevos constante y de calidad!',
     image: '/gallina-1.jpg',
     characteristics: ['300+ huevos/año', 'Huevos grandes marrones'],
-    ageOptions: commonAgeOptions
+    // PRECIOS EXCLUSIVOS PARA SUSSEX
+    ageOptions: [
+      { label: '4 Semanas', price: 5 },
+      { label: '8 Semanas', price: 8 },
+      { label: '12 Semanas', price: 12 },
+      { label: '16 Semanas', price: 16 },
+      { label: '18 Semanas', price: 18 },
+      { label: '20 Semanas', price: 25 },
+    ]
   },
   {
     id: 2,
@@ -44,7 +48,15 @@ const products: Product[] = [
     description: 'Máxima eficiencia en producción de huevos blancos de calidad premium.',
     image: '/gallina-3.jpg',
     characteristics: ['320+ huevos/año', 'Máxima eficiencia'],
-    ageOptions: commonAgeOptions
+    // PRECIOS EXCLUSIVOS PARA LEGHORN BLANCA
+    ageOptions: [
+      { label: '4 Semanas', price: 2 },
+      { label: '6 Semanas', price: 4 },
+      { label: '12 Semanas', price: 6 },
+      { label: '14 Semanas', price: 9 },
+      { label: '16 Semanas', price: 10 },
+      { label: '20 Semanas', price: 13 },
+    ]
   },
   {
     id: 3,
@@ -52,49 +64,104 @@ const products: Product[] = [
     description: 'Famosa por sus huevos de intenso color marrón y excelente persistencia.',
     image: '/hyline.jpg',
     characteristics: ['350+ huevos/año', 'Cáscara extra fuerte'],
-    ageOptions: commonAgeOptions
+    // PRECIOS EXCLUSIVOS PARA HY-LINE BROWN
+    ageOptions: [
+      { label: '4 Semanas', price: 2 },
+      { label: '6 Semanas', price: 4 },
+      { label: '12 Semanas', price: 6 },
+      { label: '14 Semanas', price: 9 },
+      { label: '16 Semanas', price: 10 },
+      { label: '20 Semanas', price: 13 },
+    ]
+  },
+  {
+    id: 3,
+    name: 'Brahma',
+    description: 'Gigantes dóciles de gran belleza ornamental y doble propósito. Destacan por su imponente tamaño, patas plumadas y un carácter sumamente tranquilo. ¡El toque majestuoso que le falta a tu plantel!',
+    image: '/Brahma.jpg',
+    characteristics: ['350+ huevos/año', 'Cáscara extra fuerte'],
+    // PRECIOS EXCLUSIVOS PARA BRAHMA
+    ageOptions: [
+      { label: '4 Semanas', price: 12 },
+      { label: '8 Semanas', price: 20 },
+      { label: '12 Semanas', price: 22 },
+      { label: '16 Semanas', price: 30 },
+      { label: '18 Semanas', price: 35 },
+      { label: '20 Semanas', price: 45 },
+    ]
   },
 ];
 
 export default function Products() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const cardsRef = useRef<HTMLDivElement>(null);
+  
   const [selectedAges, setSelectedAges] = useState<Record<number, string>>(
     Object.fromEntries(products.map(p => [p.id, p.ageOptions[0].label]))
   );
-  const [cart, setCart] = useState<{ product: Product; quantity: number; selectedAge: string; priceAtSelection: number }[]>([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
 
-  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const [cart, setCart] = useState<{ product: Product; quantity: number; selectedAge: string; priceAtSelection: number }[]>([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const cards = cardsRef.current?.querySelectorAll('.product-card');
+      if (cards) {
+        gsap.fromTo(cards,
+          { rotateX: 45, opacity: 0, y: 50 },
+          {
+            rotateX: 0, opacity: 1, y: 0,
+            duration: 0.8, stagger: 0.1, ease: 'power2.out',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top 60%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      }
+    }, sectionRef);
+    return () => ctx.revert();
+  }, []);
+
+  const handleAgeChange = (productId: number, ageLabel: string) => {
+    setSelectedAges(prev => ({ ...prev, [productId]: ageLabel }));
+  };
+
+  const getPriceForSelectedAge = (product: Product) => {
+    const selectedAgeLabel = selectedAges[product.id];
+    return product.ageOptions.find(opt => opt.label === selectedAgeLabel)?.price || 0;
+  };
 
   const addToCart = (product: Product) => {
-    try {
-      const ageLabel = selectedAges[product.id];
-      const ageOption = product.ageOptions.find(opt => opt.label === ageLabel);
-      const price = ageOption ? ageOption.price : 0;
-      
-      setCart((prev) => {
-        const existing = prev.find((item) => item.product.id === product.id && item.selectedAge === ageLabel);
-        if (existing) {
-          return prev.map((item) => (item.product.id === product.id && item.selectedAge === ageLabel) ? { ...item, quantity: item.quantity + 1 } : item);
-        }
-        return [...prev, { product, quantity: 1, selectedAge: ageLabel, priceAtSelection: price }];
-      });
-    } catch (error) {
-      console.error("Error al agregar al carrito:", error);
-    }
-  };
+    const age = selectedAges[product.id];
+    const price = getPriceForSelectedAge(product);
 
-  const updateQuantity = (productId: number, age: string, delta: number) => {
-    setCart(prev => prev.map(item => {
-      if (item.product.id === productId && item.selectedAge === age) {
-        const newQty = Math.max(1, item.quantity + delta);
-        return { ...item, quantity: newQty };
+    setCart((prev) => {
+      const existing = prev.find((item) => item.product.id === product.id && item.selectedAge === age);
+      if (existing) {
+        return prev.map((item) =>
+          (item.product.id === product.id && item.selectedAge === age)
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
       }
-      return item;
-    }));
+      return [...prev, { product, quantity: 1, selectedAge: age, priceAtSelection: price }];
+    });
   };
 
-  const removeItem = (productId: number, age: string) => {
-    setCart(prev => prev.filter(item => !(item.product.id === productId && item.selectedAge === age)));
+  const removeFromCart = (productId: number, age: string) => {
+    setCart((prev) => {
+      const existing = prev.find((item) => item.productId === productId && item.selectedAge === age);
+      if (existing && existing.quantity > 1) {
+        return prev.map((item) =>
+          (item.product.id === productId && item.selectedAge === age)
+            ? { ...item, quantity: item.quantity - 1 }
+            : item
+        );
+      }
+      return prev.filter((item) => !(item.product.id === productId && item.selectedAge === age));
+    });
   };
 
   const getTotalPrice = () => {
@@ -102,102 +169,137 @@ export default function Products() {
   };
 
   const sendWhatsAppQuote = () => {
-    let message = `📦 *NUEVO PEDIDO - AVÍCOLA AGAVES PERÚ*\n\n`;
-    cart.forEach(item => {
-      message += `• ${item.quantity}x ${item.product.name} (${item.selectedAge}) - S/ ${item.priceAtSelection * item.quantity}\n`;
+    if (cart.length === 0) return;
+
+    const today = new Date().toLocaleDateString('es-PE', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
     });
-    message += `\n💰 *TOTAL ESTIMADO: S/ ${getTotalPrice()}*`;
-    window.open(`https://wa.me/51946665053?text=${encodeURIComponent(message)}`, '_blank');
+
+    let message = `📦 *SOLICITUD DE COTIZACIÓN - AVÍCOLA AGAVES PERÚ*\n`;
+    message += `👋 ¡Hola! Me gustaría recibir una cotización formal para el siguiente pedido realizado desde la web:\n\n`;
+    message += `*Cliente:* [Nombre del Cliente]\n`;
+    message += `*Fecha:* ${today}\n\n`;
+    message += `*DETALLE DEL PEDIDO (USD):*\n`;
+
+    cart.forEach((item) => {
+      message += `• ${item.quantity}x ${item.product.name} (${item.selectedAge}) — * $${(item.priceAtSelection * item.quantity).toFixed(2)} *\n`;
+    });
+
+    message += `\n---------------------------------------\n`;
+    message += `💰 *TOTAL ESTIMADO: $${getTotalPrice().toFixed(2)} USD*\n`;
+    message += `---------------------------------------\n\n`;
+    message += `📍 *DESPACHO:*\n`;
+    message += `Me encuentro en [Ciudad/Departamento].\n\n`;
+    message += `*Por favor, cotizar el envío para incluirlo en el pago total.*\n\n`;
+    message += `Quedo atento(a) a su confirmación de stock.`;
+
+    window.open(`https://wa.me/50760906967?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
+    setIsDialogOpen(false);
   };
 
   return (
-    <section id="productos" className="py-20 bg-[#fef9f0] relative min-h-[500px]">
+    <section ref={sectionRef} id="productos" className="relative py-20 bg-[#fef9f0] overflow-hidden">
       <div className="container mx-auto px-4">
-        <h2 className="text-4xl font-bold text-center mb-12">Catálogo de Productos</h2>
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="text-center mb-16">
+          <span className="text-[#f7c35f] font-semibold text-sm uppercase tracking-wider mb-2 block">Venta de Gallinas</span>
+          <h2 className="text-4xl md:text-5xl font-bold text-[#1e1e1e] mb-4">Nuestro <span className="text-[#f7c35f]">Catálogo</span></h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">Selecciona la edad ideal para tu proyecto avícola. Cotización en Dólares.</p>
+        </div>
+
+        <div ref={cardsRef} className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {products.map((product) => (
-            <div key={product.id} className="bg-white p-6 rounded-3xl shadow-xl border border-gray-100 flex flex-col h-full">
-              <img src={product.image} alt={product.name} className="rounded-2xl w-full h-52 object-cover mb-4" />
-              <h3 className="text-2xl font-bold mb-2">{product.name}</h3>
-              <p className="text-gray-500 text-sm mb-4 flex-grow">{product.description}</p>
-              
-              <div className="text-[#f7c35f] font-bold text-xl mb-4 text-center bg-gray-50 py-2 rounded-xl">
-                S/ {product.ageOptions.find(opt => opt.label === selectedAges[product.id])?.price}
+            <div key={product.id} className="product-card bg-white rounded-3xl overflow-hidden shadow-xl border border-gray-100 flex flex-col">
+              <div className="relative aspect-[4/3] overflow-hidden">
+                <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-2xl shadow-lg">
+                  <span className="text-xl font-bold text-[#1e1e1e]">
+                    ${getPriceForSelectedAge(product)}
+                  </span>
+                </div>
               </div>
 
-              <select 
-                className="w-full p-3 border rounded-xl mb-4 bg-white outline-none cursor-pointer"
-                value={selectedAges[product.id]}
-                onChange={(e) => setSelectedAges({...selectedAges, [product.id]: e.target.value})}
-              >
-                {product.ageOptions.map(opt => <option key={opt.label} value={opt.label}>{opt.label}</option>)}
-              </select>
+              <div className="p-6 flex-1 flex flex-col">
+                <h3 className="text-2xl font-bold text-[#1e1e1e] mb-2">{product.name}</h3>
+                <p className="text-gray-500 text-sm mb-6 flex-1">{product.description}</p>
 
-              <button 
-                onClick={() => addToCart(product)}
-                className="w-full bg-[#1e1e1e] text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#f7c35f] hover:text-[#1e1e1e] transition-all"
-              >
-                <ShoppingCart className="w-5 h-5" /> Agregar al Pedido
-              </button>
+                {/* Selector de Edad */}
+                <div className="mb-6">
+                  <label className="text-[10px] uppercase font-bold text-gray-400 mb-2 block tracking-widest">Seleccionar Edad</label>
+                  <div className="relative">
+                    <select
+                      value={selectedAges[product.id]}
+                      onChange={(e) => handleAgeChange(product.id, e.target.value)}
+                      className="w-full appearance-none bg-gray-50 border border-gray-200 text-[#1e1e1e] py-3 px-4 pr-10 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#f7c35f] transition-all cursor-pointer"
+                    >
+                      {product.ageOptions.map((opt) => (
+                        <option key={opt.label} value={opt.label}>{opt.label}</option>
+                      ))}
+                    </select>
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => addToCart(product)}
+                  className="w-full bg-[#1e1e1e] text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#f7c35f] hover:text-[#1e1e1e] transition-all"
+                >
+                  <Plus className="w-5 h-5" /> Agregar al Pedido
+                </button>
+              </div>
             </div>
           ))}
         </div>
+
+        {/* Floating Cart Button (idéntico a MX) */}
+        {cart.length > 0 && (
+          <div className="fixed bottom-8 right-8 z-50">
+            <button
+              onClick={() => setIsDialogOpen(true)}
+              className="bg-[#f7c35f] text-[#1e1e1e] p-5 rounded-full shadow-2xl flex items-center gap-3 hover:scale-105 transition-transform"
+            >
+              <ShoppingCart className="w-6 h-6" />
+              <span className="font-bold">{cart.reduce((a, b) => a + b.quantity, 0)}</span>
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* BOTÓN FLOTANTE DEL CARRITO */}
-      {cart.length > 0 && (
-        <button
-          onClick={() => setIsCartOpen(true)}
-          className="fixed bottom-10 right-10 z-[999] bg-[#f7c35f] text-[#1e1e1e] p-5 rounded-full shadow-[0_10px_30px_rgba(247,195,95,0.4)] hover:scale-110 transition-transform flex items-center justify-center border-4 border-white"
-        >
-          <ShoppingBag className="w-8 h-8" />
-          <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold w-7 h-7 rounded-full flex items-center justify-center border-2 border-white">
-            {totalItems}
-          </span>
-        </button>
-      )}
-
-      {/* PANEL LATERAL (CARRO) */}
-      <div className={`fixed inset-0 z-[1000] ${isCartOpen ? 'block' : 'hidden'}`}>
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsCartOpen(false)} />
-        <div className="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl flex flex-col">
-          <div className="p-6 border-b flex justify-between items-center bg-[#1e1e1e] text-white">
-            <h2 className="text-xl font-bold flex items-center gap-2">Tu Carrito</h2>
-            <button onClick={() => setIsCartOpen(false)} className="p-2"><X className="w-6 h-6" /></button>
-          </div>
-          
-          <div className="flex-1 overflow-y-auto p-6 space-y-6">
-            {cart.map((item, i) => (
-              <div key={`${item.product.id}-${item.selectedAge}`} className="flex gap-4 bg-gray-50 p-4 rounded-2xl relative">
-                <img src={item.product.image} className="w-20 h-20 rounded-xl object-cover" />
+      {/* Cart Dialog de México */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="bg-white max-w-md rounded-3xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold">Resumen de Pedido</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 my-4 max-h-[60vh] overflow-y-auto">
+            {cart.map((item, idx) => (
+              <div key={idx} className="flex items-center gap-4 bg-gray-50 p-3 rounded-2xl">
+                <img src={item.product.image} className="w-16 h-16 rounded-xl object-cover" />
                 <div className="flex-1">
-                  <p className="font-bold">{item.product.name}</p>
+                  <h4 className="font-bold text-sm">{item.product.name}</h4>
                   <p className="text-xs text-gray-400">{item.selectedAge}</p>
                   <div className="flex items-center gap-3 mt-2">
-                    <button onClick={() => updateQuantity(item.product.id, item.selectedAge, -1)} className="p-1 bg-white border rounded-md"><Minus className="w-3 h-3"/></button>
+                    <button onClick={() => removeFromCart(item.product.id, item.selectedAge)} className="p-1 bg-gray-200 rounded-md"><Minus className="w-3 h-3"/></button>
                     <span className="text-sm font-bold">{item.quantity}</span>
-                    <button onClick={() => updateQuantity(item.product.id, item.selectedAge, 1)} className="p-1 bg-white border rounded-md"><Plus className="w-3 h-3"/></button>
+                    <button onClick={() => addToCart(item.product)} className="p-1 bg-gray-200 rounded-md"><Plus className="w-3 h-3"/></button>
                   </div>
                 </div>
-                <div className="text-right flex flex-col justify-between items-end">
-                  <button onClick={() => removeItem(item.product.id, item.selectedAge)} className="text-red-400 hover:text-red-600"><Trash2 className="w-4 h-4" /></button>
-                  <p className="font-bold text-[#f7c35f]">S/ {item.priceAtSelection * item.quantity}</p>
-                </div>
+                <p className="font-bold text-[#f7c35f]">${(item.priceAtSelection * item.quantity)}</p>
               </div>
             ))}
           </div>
-
-          <div className="p-6 border-t bg-gray-50">
+          <div className="border-t pt-4">
             <div className="flex justify-between items-center mb-6">
-              <span className="text-gray-500 font-medium uppercase text-xs tracking-widest">Total Estimado</span>
-              <span className="text-3xl font-black text-[#1e1e1e]">S/ {getTotalPrice()}</span>
+              <span className="text-gray-500 font-medium">Total Estimado</span>
+              <span className="text-3xl font-bold">${getTotalPrice()}</span>
             </div>
-            <button onClick={sendWhatsAppQuote} className="w-full bg-[#25D366] text-white py-5 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-[#128C7E] transition-all">
-              <MessageCircle className="w-6 h-6" /> Confirmar por WhatsApp
+            <button onClick={sendWhatsAppQuote} className="w-full bg-green-500 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-green-600">
+              <Check className="w-6 h-6" /> Enviar por WhatsApp
             </button>
           </div>
-        </div>
-      </div>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }

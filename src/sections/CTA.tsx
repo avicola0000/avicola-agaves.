@@ -35,7 +35,7 @@ export default function CTA() {
     const destello = "\u2728";
     const text = `¡Hola! Estoy listo para tener gallinas ponedoras. ¿Me pueden ayudar con una cotización? ${pollito}${destello}`;
     const message = encodeURIComponent(text);
-    window.open(`https://wa.me/51946665053?text=${message}`, '_blank');
+    window.open(`https://wa.me/50760906967?text=${message}`, '_blank');
   };
 
   return (
@@ -70,7 +70,7 @@ export default function CTA() {
                 </div>
                 <div>
                   <p className="text-white/60 text-sm">Teléfono</p>
-                  <p className="text-white font-semibold">+51 946 665 053</p>
+                  <p className="text-white font-semibold">+507 6090 6967</p>
                 </div>
               </div>
 
@@ -80,7 +80,7 @@ export default function CTA() {
                 </div>
                 <div>
                   <p className="text-white/60 text-sm">Logística</p>
-                  <p className="text-white font-semibold">Despachos a todo peru</p>
+                  <p className="text-white font-semibold">Despachos a toda panama</p>
                 </div>
               </div>
 
@@ -90,7 +90,7 @@ export default function CTA() {
                 </div>
                 <div>
                   <p className="text-white/60 text-sm">Ubicación</p>
-                  <p className="text-white font-semibold">URB. EL, MZA. D, Chincha Alta 11702, Perú</p>
+                  <p className="text-white font-semibold">Calle 11 de Octubre, Aguadulce, Provincia de Coclé, Panamá</p>
                 </div>
               </div>
             </div>
